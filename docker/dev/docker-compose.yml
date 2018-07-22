@@ -11,6 +11,7 @@ test:
     MYSQL_USER: root
     MYSQL_PASSWORD: password
     TEST_OUTPUT_DIR: /reports # Defined in test.py settings
+    NOSE_INCLUDE_EXE: 1 # Resolves an issue on the Unit/Integration Testing -> Improving Test Output section
 
 db:
   image: mysql:5.6
