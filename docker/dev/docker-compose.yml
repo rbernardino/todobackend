@@ -13,6 +13,17 @@ test:
     TEST_OUTPUT_DIR: /reports # Defined in test.py settings
     NOSE_INCLUDE_EXE: 1 # Resolves an issue on the Unit/Integration Testing -> Improving Test Output section
 
+builder:
+  build: ../../
+  dockerfile: docker/dev/Dockerfile
+  volumes:
+    - ../../target:/wheelhouse # Builder output is stored inside /wheelhouse (see Dockerfile), and is mapped to
+                               # 'target' inside our docker host
+  volumes_from:
+    - cache
+  entrypoint: "entrypoint.sh"  # This is the entrypoint from the base image which activates the virtual env
+  command: ["pip", "wheel", "--no-index", "-f build", "."]
+
 agent:
   image: ryanbernardino/ansible
   volumes:
