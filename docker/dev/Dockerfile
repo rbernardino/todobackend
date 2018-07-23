@@ -18,6 +18,9 @@ VOLUME /wheelhouse
 # OUTPUT: Test reports are output here
 VOLUME /reports
 
+# OUTPUT: Build cache shared by the 'test' and 'builder' service
+VOLUME /build
+
 # Add test entrypoint script
 COPY scripts/test.sh /usr/local/bin/test.sh
 RUN chmod +x /usr/local/bin/test.sh
