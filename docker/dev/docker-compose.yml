@@ -22,7 +22,7 @@ builder:
   volumes_from:
     - cache
   entrypoint: "entrypoint.sh"  # This is the entrypoint from the base image which activates the virtual env
-  command: ["pip", "wheel", "--no-index", "-f build", "."]
+  command: ["pip", "wheel", "--no-index", "-f /build", "."]
 
 agent:
   image: ryanbernardino/ansible
