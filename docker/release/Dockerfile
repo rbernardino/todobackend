@@ -1,4 +1,4 @@
-FROM jmenga/todobackend-base:latest
+FROM ryanbernardino/todobackend-base:latest
 LABEL Author='Ryan Bernardino <r.bernardino17@gmail.com>'
 
 # Copy application artifacts
