@@ -8,7 +8,6 @@ app:
     MYSQL_HOST: db
     MYSQL_USER: todo
     MYSQL_PASSWORD: password
-    DEBUG: "true"
   volumes_from:
     - webroot
   command:
