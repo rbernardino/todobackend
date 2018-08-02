@@ -16,9 +16,6 @@ test:
 builder:
   build: ../../
   dockerfile: docker/dev/Dockerfile
-  volumes:
-    - ../../target:/wheelhouse # Builder output is stored inside /wheelhouse (see Dockerfile), and is mapped to
-                               # 'target' inside our docker host
   volumes_from:
     - cache
   entrypoint: "entrypoint.sh"  # This is the entrypoint from the base image which activates the virtual env
