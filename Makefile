@@ -20,8 +20,15 @@ CHECK := @bash -c '\
 .PHONY: test build release clean
 
 test:
+	${INFO} "Pulling latest images..."
+	@ docker-compose -p $(DEV_PROJECT) -f $(DEV_COMPOSE_FILE) pull
+
 	${INFO} "Building images..."
-	@ docker-compose -p $(DEV_PROJECT) -f $(DEV_COMPOSE_FILE) build
+  # --pull ensures we have the most up-to-date version of the base image
+	@ docker-compose -p $(DEV_PROJECT) -f $(DEV_COMPOSE_FILE) build --pull test
+
+  # No need for --pull as we already pulled the latest base image from the 'test' service
+	@ docker-compose -p $(DEV_PROJECT) -f $(DEV_COMPOSE_FILE) build cache
 
 	${INFO} "Ensuring database is ready..."
 	@ docker-compose -p $(DEV_PROJECT) -f $(DEV_COMPOSE_FILE) run --rm agent
@@ -35,10 +42,14 @@ test:
 	${INFO} "Tests complete"
 
 build:
+	${INFO} "Creating the builder image..."
+  # No need for --pull as we already pulled the latest base image from the 'test' service
+	@ docker-compose -p $(DEV_PROJECT) -f $(DEV_COMPOSE_FILE) build builder
+
 	${INFO} "Building application artifacts..."
 	@ docker-compose -p $(DEV_PROJECT) -f $(DEV_COMPOSE_FILE) up builder
 
-	# We don't want to copy artifacts if the build fails
+  # We don't want to copy artifacts if the build fails
 	${CHECK} $(DEV_PROJECT) $(DEV_COMPOSE_FILE) builder
 
 	${INFO} "Copying artifacts to target folder..."
@@ -47,8 +58,17 @@ build:
 	${INFO} "Build complete"
 
 release:
+	${INFO} "Pulling latest images..."
+  # Pull the latest image for 'todobackend-specs'
+	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) pull test
+
 	${INFO} "Building images..."
-	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) build
+  # No need for --pull for both of these services as we already pulled the latest base image from the 'test' service
+	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) build app
+	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) build webroot
+
+  # Pull the latest image for 'nginx'
+	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) build --pull nginx
 
 	${INFO} "Ensuring database is ready..."
 	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) run --rm agent
