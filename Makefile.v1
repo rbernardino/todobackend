@@ -2,8 +2,8 @@ PROJECT_NAME ?= todobackend
 ORG_NAME ?= ryanbernardino
 REPO_NAME ?= todobackend
 
-DEV_COMPOSE_FILE := docker/dev/docker-compose-v2.yml
-REL_COMPOSE_FILE := docker/release/docker-compose-v2.yml
+DEV_COMPOSE_FILE := docker/dev/docker-compose.yml
+REL_COMPOSE_FILE := docker/release/docker-compose.yml
 
 # Docker compose project names
 REL_PROJECT := $(PROJECT_NAME)$(BUILD_ID)
@@ -39,16 +39,15 @@ DOCKER_REGISTRY_AUTH ?=
 .PHONY: test build release clean tag buildtag login logout publish
 
 test:
-  # Docker-compose does not create nor destroy external volumes
-	${INFO} "Creating the cache volume..."
-	@ docker volume create --name cache
-
 	${INFO} "Pulling latest images..."
 	@ docker-compose -p $(DEV_PROJECT) -f $(DEV_COMPOSE_FILE) pull
 
 	${INFO} "Building images..."
   # --pull ensures we have the most up-to-date version of the base image
 	@ docker-compose -p $(DEV_PROJECT) -f $(DEV_COMPOSE_FILE) build --pull test
+
+  # No need for --pull as we already pulled the latest base image from the 'test' service
+	@ docker-compose -p $(DEV_PROJECT) -f $(DEV_COMPOSE_FILE) build cache
 
 	${INFO} "Ensuring database is ready..."
 	@ docker-compose -p $(DEV_PROJECT) -f $(DEV_COMPOSE_FILE) run --rm agent
@@ -85,6 +84,7 @@ release:
 	${INFO} "Building images..."
   # No need for --pull for both of these services as we already pulled the latest base image from the 'test' service
 	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) build app
+	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) build webroot
 
   # Pull the latest image for 'nginx'
 	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) build --pull nginx
@@ -108,11 +108,12 @@ release:
 
 clean:
 	${INFO} "Destroying the development environment..."
-  # This is now the recommended approach for killing docker-compose services
-	@ docker-compose -p $(DEV_PROJECT) -f $(DEV_COMPOSE_FILE) down -v
+	@ docker-compose -p $(DEV_PROJECT) -f $(DEV_COMPOSE_FILE) kill
+	@ docker-compose -p $(DEV_PROJECT) -f $(DEV_COMPOSE_FILE) rm -f -v
 
 	${INFO} "Destroying the release environment..."
-	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) down -v
+	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) kill
+	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) rm -f -v
 
 	${INFO} "Removing dangling images..."
 	@ docker images -q -f dangling=true -f label=application=$(REPO_NAME) | xargs -I ARGS docker rmi -f ARGS
