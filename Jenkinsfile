@@ -9,9 +9,7 @@ node {
         sh 'make build'
 
         stage 'Create release environment and run acceptance tests'
-        withEnv(["PROBE_TIMEOUT=360"]) {
-            sh 'make release'
-        }
+        sh 'make release'
 
         stage 'Tag and publish the release image'
         sh "make tag latest \$(git rev-parse --short HEAD) \$(git tag --points-at HEAD)"
