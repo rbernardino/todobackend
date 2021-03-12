@@ -1,8 +1,7 @@
 .PHONY: test build release
 
 test:
-	echo "Hello"
-	echo "from make"
+	docker-compose -f docker/dev/docker-compose.yml build
 
 build:
 	echo "Hello from build"
