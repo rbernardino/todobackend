@@ -19,6 +19,7 @@ VOLUME /wheelhouse
 VOLUME /reports
 
 # OUTPUT: Build cache shared by the 'test' and 'builder' service
+# This is where 'test.sh' entrypoint script download the application requirements
 VOLUME /build
 
 # Add test entrypoint script
