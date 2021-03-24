@@ -25,38 +25,38 @@ test:
 build:
 	${INFO} "Building application artifacts..."
 	docker-compose -p $(DEV_PROJECT) -f $(DEV_COMPOSE_FILE) up builder
-  ${INFO} "Build complete"
+	${INFO} "Build complete"
 
 release:
-  ${INFO} "Building images..."
+	${INFO} "Building images..."
 	docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) build
 
-  ${INFO} "Ensuring database is ready..."
+	${INFO} "Ensuring database is ready..."
 	docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) up agent
 
-  ${INFO} "Collecting static files..."
+	${INFO} "Collecting static files..."
 	docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) run --rm app manage.py collectstatic --noinput
 
-  ${INFO} "Running database migrations..."
+	${INFO} "Running database migrations..."
 	docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) run --rm app manage.py migrate --noinput
 
-  ${INFO} "Running acceptance tests..."
+	${INFO} "Running acceptance tests..."
 	docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) up test
-  ${INFO} "Acceptance testing complete..."
+	${INFO} "Acceptance testing complete..."
 
 clean:
-  ${INFO} "Destroying the development environment..."
+	${INFO} "Destroying the development environment..."
 	docker-compose -p $(DEV_PROJECT) -f $(DEV_COMPOSE_FILE) kill
 	docker-compose -p $(DEV_PROJECT) -f $(DEV_COMPOSE_FILE) rm -f -v
 
-  ${INFO} "Destroying the release environment..."
+	${INFO} "Destroying the release environment..."
 	docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) kill
 	docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) rm -f -v
 
-  ${INFO} "Removing dangling images..."
+	${INFO} "Removing dangling images..."
 	docker images -q -f dangling=true -f label=application=$(REPO_NAME) | xargs -I ARGS docker rmi -f ARGS
 
-  ${INFO} "Clean complete"
+	${INFO} "Clean complete"
 
 # Cosmetics
 YELLOW := "\e[1;33m"
