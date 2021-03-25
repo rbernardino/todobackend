@@ -1,0 +1,4 @@
+FROM nginx
+LABEL Author='Ryan Bernardino <r.bernardino17@gmail.com>'
+
+COPY todobackend.conf /etc/nginx/conf.d/todobackend.conf
