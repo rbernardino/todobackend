@@ -20,15 +20,15 @@ CHECK := @bash -c '\
 .PHONY: test build release clean
 
 test:
-  ${INFO} "Pulling latest images..."
-  @ docker-compose -p $(DEV_PROJECT) -f $(DEV_COMPOSE_FILE) pull
+	${INFO} "Pulling latest images..."
+	@ docker-compose -p $(DEV_PROJECT) -f $(DEV_COMPOSE_FILE) pull
 
 	${INFO} "Building images..."
  # --pull ensures we have the most up-to-date version of the base image
 	@ docker-compose -p $(DEV_PROJECT) -f $(DEV_COMPOSE_FILE) build --pull test
 
-  # No need for --pull as we already pulled the latest base image from the 'test' service
-  @ docker-compose -p $(DEV_PROJECT) -f $(DEV_COMPOSE_FILE) build cache
+ # No need for --pull as we already pulled the latest base image from the 'test' service
+	@ docker-compose -p $(DEV_PROJECT) -f $(DEV_COMPOSE_FILE) build cache
 
 	${INFO} "Ensuring database is ready..."
 	@ docker-compose -p $(DEV_PROJECT) -f $(DEV_COMPOSE_FILE) run --rm agent
@@ -42,7 +42,7 @@ test:
 	${INFO} "Tests complete"
 
 build:
-  ${INFO} "Creating the builder image..."
+	${INFO} "Creating the builder image..."
  # No need for --pull as we already pulled the latest base image from the 'test' service
 	@ docker-compose -p $(DEV_PROJECT) -f $(DEV_COMPOSE_FILE) build builder
 
@@ -57,7 +57,7 @@ build:
 	${INFO} "Build complete"
 
 release:
-  ${INFO} "Pulling latest images..."
+	${INFO} "Pulling latest images..."
  # Pull the latest image for 'todobackend-specs'
 	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) pull test
 
