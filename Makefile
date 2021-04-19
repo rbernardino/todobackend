@@ -24,7 +24,7 @@ test:
   @ docker-compose -p $(DEV_PROJECT) -f $(DEV_COMPOSE_FILE) pull
 
 	${INFO} "Building images..."
-  # --pull ensures we have the most up-to-date version of the base image
+ # --pull ensures we have the most up-to-date version of the base image
 	@ docker-compose -p $(DEV_PROJECT) -f $(DEV_COMPOSE_FILE) build --pull test
 
   # No need for --pull as we already pulled the latest base image from the 'test' service
@@ -43,7 +43,7 @@ test:
 
 build:
   ${INFO} "Creating the builder image..."
-  # No need for --pull as we already pulled the latest base image from the 'test' service
+ # No need for --pull as we already pulled the latest base image from the 'test' service
 	@ docker-compose -p $(DEV_PROJECT) -f $(DEV_COMPOSE_FILE) build builder
 
 	${INFO} "Building application artifacts..."
@@ -58,15 +58,15 @@ build:
 
 release:
   ${INFO} "Pulling latest images..."
-  # Pull the latest image for 'todobackend-specs'
+ # Pull the latest image for 'todobackend-specs'
 	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) pull test
 
 	${INFO} "Building images..."
-	# No need for --pull for both of these services as we already pulled the latest base image from the 'test' service
+ # No need for --pull for both of these services as we already pulled the latest base image from the 'test' service
 	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) build app
 	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) build webroot
 
-  # Pull the latest image for 'nginx'
+ # Pull the latest image for 'nginx'
 	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) build --pull nginx
 
 	${INFO} "Ensuring database is ready..."
