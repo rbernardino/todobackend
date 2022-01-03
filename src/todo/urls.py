@@ -1,4 +1,4 @@
-from django.conf.urls import re_path, include
+from django.urls import re_path, include
 from todo import views
 from rest_framework.routers import DefaultRouter
 
