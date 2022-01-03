@@ -8,6 +8,6 @@ router.register(r'todos', views.TodoItemViewSet)
 
 # The API URLs are now determined automatically by the router.
 urlpatterns = [
-  url(r'^', include(router.urls)),
+  re_path(r'^', include(router.urls)),
 ]
 
