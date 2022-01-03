@@ -14,12 +14,12 @@ Including another URLconf
     2. Import the include() function: from django.conf.urls import url, include
     3. Add a URL to urlpatterns:  url(r'^blog/', include(blog_urls))
 """
-from django.conf.urls import url, include
+from django.urls import re_path, include
 from django.contrib import admin
 
 urlpatterns = [
-  url(r'^admin/', admin.site.urls),
+  re_path(r'^admin/', admin.site.urls),
 
   # Delegate routing anything from the base URL, exluding the admin path to the todo.urls class
-  url(r'^', include('todo.urls'))
+  re_path(r'^', include('todo.urls'))
   ]
